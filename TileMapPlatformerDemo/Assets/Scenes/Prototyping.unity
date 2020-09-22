@@ -3321,6 +3321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runspeed: 7
+  jumpSpeed: 28
 --- !u!1 &1192536809
 GameObject:
   m_ObjectHideFlags: 0
@@ -3335,7 +3336,7 @@ GameObject:
   - component: {fileID: 1192536815}
   - component: {fileID: 1192536814}
   - component: {fileID: 1192536813}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Foreground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5316,6 +5317,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1519850974, guid: 69adb0b8dd93bbc409af1f1f7a5c141c, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4087231948755827929, guid: 69adb0b8dd93bbc409af1f1f7a5c141c, type: 3}
       propertyPath: m_FlipX
       value: 0
