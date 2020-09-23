@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     // Configs
     [SerializeField] float runspeed = 5f;
     [SerializeField] float jumpSpeed = 5f;
+    [SerializeField] float climbSpeed = 5f;
 
     // State
     private bool isAlive = true;
@@ -17,9 +18,12 @@ public class Player : MonoBehaviour
     private Collider2D playerCollider2d;
 
     private const string ANIMATION_RUNNING = "Running";
-    private const string HORIZONTAL_AXIS = "Horizontal";
+    private const string ANIMATION_CLIMBING = "Climbing";
+    private const string INPUT_AXIS_HORIZONTAL = "Horizontal";
+    private const string INPUT_AXIS_VERTICAL = "Vertical";
     private const string INPUT_JUMP = "Jump";
     private const string LAYER_GROUND = "Ground";
+    private const string LAYER_LADDER = "Ladder";
 
     private bool PlayerHasHorizontalSpeed {
         get
@@ -28,7 +32,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    private bool IsNotTouchingGround { get { return !playerCollider2d.IsTouchingLayers(LayerMask.GetMask(LAYER_GROUND)); } }
+    private bool PlayerHasVerticalSpeed
+    {
+        get
+        {
+            return Mathf.Abs(playerRigidBody.velocity.y) > Mathf.Epsilon;
+        }
+    }
 
     void Start()
     {
@@ -42,11 +52,12 @@ public class Player : MonoBehaviour
         Run();
         Jump();
         FlipSprite();
+        ClimbLadder();
     }
 
     private void Run()
     {
-        float controlThrow = CrossPlatformInputManager.GetAxis(HORIZONTAL_AXIS);
+        float controlThrow = CrossPlatformInputManager.GetAxis(INPUT_AXIS_HORIZONTAL);
         Vector2 playerVelocity = new Vector2(controlThrow * runspeed, playerRigidBody.velocity.y);
         playerRigidBody.velocity = playerVelocity;
         playerAnimator.SetBool(ANIMATION_RUNNING, PlayerHasHorizontalSpeed);
@@ -54,7 +65,7 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        if (IsNotTouchingGround) { return; }
+        if (!IsTouchingLayer(LAYER_GROUND)) { return; }
 
         if (CrossPlatformInputManager.GetButtonDown(INPUT_JUMP))
         {
@@ -63,11 +74,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void ClimbLadder()
+    {
+        if (!IsTouchingLayer(LAYER_LADDER)) { return; }
+
+        float controlThrow = CrossPlatformInputManager.GetAxis(INPUT_AXIS_VERTICAL);
+        Vector2 climbVelocity = new Vector2(playerRigidBody.velocity.x, controlThrow * climbSpeed);
+        playerRigidBody.velocity = climbVelocity;
+
+        playerAnimator.SetBool(ANIMATION_CLIMBING, PlayerHasVerticalSpeed);
+    }
+
     private void FlipSprite()
     {
         if (PlayerHasHorizontalSpeed)
         {
             transform.localScale = new Vector2(Mathf.Sign(playerRigidBody.velocity.x), 1f);
         }
+    }
+
+    private bool IsTouchingLayer(string layer)
+    {
+        return playerCollider2d.IsTouchingLayers(LayerMask.GetMask(layer));
     }
 }
