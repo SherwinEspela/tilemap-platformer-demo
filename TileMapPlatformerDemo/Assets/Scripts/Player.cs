@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D playerRigidBody;
     private Animator playerAnimator;
     private Collider2D playerCollider2d;
+    private float gravityScaleAtStart;
 
     private const string ANIMATION_RUNNING = "Running";
     private const string ANIMATION_CLIMBING = "Climbing";
@@ -45,6 +46,7 @@ public class Player : MonoBehaviour
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
         playerCollider2d = GetComponent<Collider2D>();
+        gravityScaleAtStart = playerRigidBody.gravityScale;
     }
 
     void Update()
@@ -76,11 +78,16 @@ public class Player : MonoBehaviour
 
     private void ClimbLadder()
     {
-        if (!IsTouchingLayer(LAYER_LADDER)) { return; }
+        if (!IsTouchingLayer(LAYER_LADDER)) {
+            playerAnimator.SetBool(ANIMATION_CLIMBING, false);
+            playerRigidBody.gravityScale = gravityScaleAtStart;
+            return;
+        }
 
         float controlThrow = CrossPlatformInputManager.GetAxis(INPUT_AXIS_VERTICAL);
         Vector2 climbVelocity = new Vector2(playerRigidBody.velocity.x, controlThrow * climbSpeed);
         playerRigidBody.velocity = climbVelocity;
+        playerRigidBody.gravityScale = 0f;
 
         playerAnimator.SetBool(ANIMATION_CLIMBING, PlayerHasVerticalSpeed);
     }
