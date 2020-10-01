@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D playerRigidBody;
     private Animator playerAnimator;
-    private Collider2D playerCollider2d;
+    private CapsuleCollider2D _playerBodyCollider;
+    private BoxCollider2D _playerFeetCollider;
     private float gravityScaleAtStart;
 
     private const string ANIMATION_RUNNING = "Running";
@@ -45,7 +46,8 @@ public class Player : MonoBehaviour
     {
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
-        playerCollider2d = GetComponent<Collider2D>();
+        _playerBodyCollider = GetComponent<CapsuleCollider2D>();
+        _playerFeetCollider = GetComponent<BoxCollider2D>();
         gravityScaleAtStart = playerRigidBody.gravityScale;
     }
 
@@ -102,6 +104,6 @@ public class Player : MonoBehaviour
 
     private bool IsTouchingLayer(string layer)
     {
-        return playerCollider2d.IsTouchingLayers(LayerMask.GetMask(layer));
+        return _playerFeetCollider.IsTouchingLayers(LayerMask.GetMask(layer));
     }
 }
