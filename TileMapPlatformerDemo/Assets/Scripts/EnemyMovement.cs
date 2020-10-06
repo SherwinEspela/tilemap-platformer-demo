@@ -7,6 +7,11 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 1f;
     Rigidbody2D _rigidBody;
 
+    bool IsFacingRight
+    {
+        get { return transform.localScale.x > 0; }
+    }
+
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
@@ -15,6 +20,11 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _rigidBody.velocity = new Vector2(moveSpeed, 0f);
+        _rigidBody.velocity = new Vector2(IsFacingRight ? moveSpeed : -moveSpeed, 0f);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        transform.localScale = new Vector2(-(Mathf.Sign(_rigidBody.velocity.x)), 1f);
     }
 }
