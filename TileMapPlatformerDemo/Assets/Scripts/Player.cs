@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
 
     private void Killed()
     {
-        if (_playerBodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+        if (_playerBodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemy", "Hazards")))
         {
             _isAlive = false;
             _playerAnimator.SetTrigger(ANIMATION_KILLED);
